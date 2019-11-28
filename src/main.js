@@ -1,50 +1,42 @@
-const Node = require('./node.js');					// Individual node
-const Network = require('./network.js');        // Network
-const MLST = require('./mlst.js');              // Max Leaf Spanning Tree
+// Implementation of Prim's algorithm
+const Node = require('./node.js');
+const Graph = require('./graph.js');
+const Prim = require('./prim.js');
 
-console.log('running Minimum Connected Dominating Set algorithm');
-
-const numNodes = parseInt(process.argv.splice(2));
-
-// If number of nodes is not specified
-if(!numNodes || numNodes <= 0)
-   throw 'Please specify number of nodes';
-
-
-// Creating nodes for the algorithm
+const nodeCount = 5;
 const nodes = [];
-for(let i = 0; i < numNodes; i++)
+
+
+console.log(' ----- Creating Network ----- ');
+
+// Creating nodes in graph
+for(let i = 0; i < nodeCount; i++)
    nodes.splice(nodes.length, 0, new Node());
 
-// Creating test network
-nodes[0].connect(1);
-nodes[1].connect(2);
-//nodes[1].connect(3);
-nodes[1].connect(4);
-nodes[1].connect(5);
-nodes[1].connect(6);
-nodes[2].connect(3);
-nodes[3].connect(4);
-nodes[3].connect(5);
-nodes[5].connect(6);
+const connections = [
+   [0, 1, 4],
+   [1,2,8],
+   [2,3,7],
+   [3,4,9],
+   [4,5,10],
+   [5,6,2],
+   [6,7,1],
+   [7,0,8],
+   [7,8,7],
+   [7,1,11],
+   [8,6,6],
+   [8,2,2],
+   [2,5,4],
+   [5,3,14]
+];
 
-// Initializing network with nodes
-const network = new Network(nodes);
+const g = new Graph(nodes);
+//g.construct(connections);
 
-// If the creating of the network failed
-if(network.create() === false) {
-   throw 'Specify nodes in the network'; 
-}
+console.log(' ----- Creating Network ----- ');
 
-console.log('Network successfully initialized');
+g.print();
 
-for(let i = 0; i < network.nodes.length; i++)
-   console.log(network.nodes[i].connected);
+const prim = new Prim(g);
 
-// Interfacing with Maximum Leaf Spanning Tree
-const mlst = new MLST(network);
-mlst.verify();
-
-console.log('after verifying network');
-for(let i = 0; i < mlst.network.nodes.length; i++)
-   console.log(mlst.network.nodes[i]);
+prim.run();
